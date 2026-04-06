@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Galpón Hub — Ceibos Group</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2535;
+    --border: #2a3348;
+    --text: #e8edf5;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --green: #22c55e;
+    --green-dim: #16a34a22;
+    --amber: #f59e0b;
+    --amber-dim: #f59e0b22;
+    --red: #ef4444;
+    --red-dim: #ef444422;
+    --blue: #3b82f6;
+    --blue-dim: #3b82f622;
+    --herb: #22c55e;
+    --semi: #f59e0b;
+    --font: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--green);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+  }
+  .logo-text {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .logo-sub {
+    font-size: 12px;
+    color: var(--text2);
+    font-family: var(--mono);
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .last-update {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .update-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .update-btn:hover { border-color: var(--green); color: var(--green); }
+
+  /* MAIN */
+  main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+
+  /* KPIs */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .kpi {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .kpi.green::before { background: var(--green); }
+  .kpi.amber::before { background: var(--amber); }
+  .kpi.red::before { background: var(--red); }
+  .kpi.blue::before { background: var(--blue); }
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .kpi-val {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .kpi.green .kpi-val { color: var(--green); }
+  .kpi.amber .kpi-val { color: var(--amber); }
+  .kpi.red .kpi-val { color: var(--red); }
+  .kpi.blue .kpi-val { color: var(--blue); }
+  .kpi-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  /* FILTERS */
+  .filters-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    margin-right: 4px;
+  }
+  .filter-btn {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .filter-btn:hover { border-color: var(--text2); color: var(--text); }
+  .filter-btn.active-all { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .filter-btn.active-herb { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+  .filter-btn.active-semi { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+  .filter-btn.active-fung { border-color: #a78bfa; color: #a78bfa; background: #a78bfa22; }
+  .filter-btn.active-inse { border-color: #fb7185; color: #fb7185; background: #fb718522; }
+  .filter-btn.active-coady { border-color: #22d3ee; color: #22d3ee; background: #22d3ee22; }
+
+  .divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+
+  .subtipo-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .sub-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sub-btn:hover { border-color: var(--text2); color: var(--text2); }
+  .sub-btn.active { border-color: var(--text2); color: var(--text); background: var(--bg3); }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .table-header-bar {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .row-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    background: var(--bg2);
+  }
+  thead th:hover { color: var(--text2); }
+  thead th.sorted { color: var(--text); }
+  thead th .sort-icon { margin-left: 4px; opacity: 0.5; }
+  thead th.sorted .sort-icon { opacity: 1; color: var(--green); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  tbody tr:hover { background: var(--bg3); }
+  tbody tr:last-child { border-bottom: none; }
+
+  td {
+    padding: 12px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  td.product-name { font-weight: 500; }
+  td.mono { font-family: var(--mono); font-size: 12px; color: var(--text2); }
+  td.number { font-family: var(--mono); font-size: 13px; text-align: right; }
+
+  .type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-herb { background: var(--green-dim); color: var(--green); border: 1px solid #22c55e33; }
+  .badge-semi { background: var(--amber-dim); color: var(--amber); border: 1px solid #f59e0b33; }
+  .badge-fung { background: #a78bfa22; color: #a78bfa; border: 1px solid #a78bfa33; }
+  .badge-inse { background: #fb718522; color: #fb7185; border: 1px solid #fb718533; }
+  .badge-coady { background: #22d3ee22; color: #22d3ee; border: 1px solid #22d3ee33; }
+  .badge-default { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+
+  .lote-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .status-ok { background: var(--green-dim); color: var(--green); }
+  .status-warn { background: var(--amber-dim); color: var(--amber); }
+  .status-venc { background: var(--red-dim); color: var(--red); }
+  .status-nd { background: var(--bg3); color: var(--text3); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 48px;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 16px 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 32px;
+  }
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+  .update-info {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg2);
+  }
+  .upload-zone:hover { border-color: var(--green); background: var(--green-dim); }
+  .upload-zone.hidden { display: none; }
+  .upload-text { font-family: var(--mono); font-size: 12px; color: var(--text2); }
+  .upload-text span { color: var(--green); }
+  #fileInput { display: none; }
+
+  @media (max-width: 768px) {
+    main { padding: 16px; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    header { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">CG</div>
+    <div>
+      <div class="logo-text">Stock Galpón Hub</div>
+      <div class="logo-sub">Ceibos Group — Insumos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="last-update" id="lastUpdate">Cargando datos...</span>
+    <button class="update-btn" onclick="document.getElementById('fileInput').click()">
+      ↑ Actualizar datos
+    </button>
+    <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="loadExcel(event)">
+  </div>
+</header>
+
+<main>
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi green">
+      <div class="kpi-label">Productos únicos</div>
+      <div class="kpi-val" id="kpi-prod">—</div>
+      <div class="kpi-sub">en stock activo</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Lotes activos</div>
+      <div class="kpi-val" id="kpi-lotes">—</div>
+      <div class="kpi-sub">con stock positivo</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">Próx. a vencer</div>
+      <div class="kpi-val" id="kpi-warn">—</div>
+      <div class="kpi-sub">menos de 6 meses</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">Vencidos</div>
+      <div class="kpi-val" id="kpi-venc">—</div>
+      <div class="kpi-sub">requieren atención</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-row">
+    <span class="filter-label">TIPO:</span>
+    <button class="filter-btn active-all" data-tipo="todos" onclick="setTipo('todos', this)">Todos</button>
+    <button class="filter-btn" data-tipo="Herbicida" onclick="setTipo('Herbicida', this)">Herbicida</button>
+    <button class="filter-btn" data-tipo="Fungicida" onclick="setTipo('Fungicida', this)">Fungicida</button>
+    <button class="filter-btn" data-tipo="Insecticida" onclick="setTipo('Insecticida', this)">Insecticida</button>
+    <button class="filter-btn" data-tipo="Semilla" onclick="setTipo('Semilla', this)">Semilla</button>
+    <button class="filter-btn" data-tipo="Coadyuvante" onclick="setTipo('Coadyuvante', this)">Coadyuvante</button>
+    <button class="filter-btn" data-tipo="Biológico" onclick="setTipo('Biológico', this)">Biológico</button>
+    <div class="divider"></div>
+    <div class="subtipo-btns" id="subtipoBtns"></div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="table-header-bar">
+      <span class="table-title">Stock por producto</span>
+      <span class="row-count" id="rowCount">— productos</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('producto')">Producto <span class="sort-icon">↕</span></th>
+          <th onclick="sortBy('tipo')">Tipo <span class="sort-icon">↕</span></th>
+          <th onclick="sortBy('subtipo')">Subtipo <span class="sort-icon">↕</span></th>
+          <th onclick="sortBy('pa')">Principio Activo <span class="sort-icon">↕</span></th>
+          <th onclick="sortBy('lotes')" style="text-align:center">Lotes <span class="sort-icon">↕</span></th>
+          <th onclick="sortBy('stock')" style="text-align:right">Stock Total <span class="sort-icon">↕</span></th>
+          <th>Unidad</th>
+          <th onclick="sortBy('venc')">Primer Vencimiento <span class="sort-icon">↕</span></th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  <span class="footer-note">Stock Galpón Hub — Ceibos Group Uruguay</span>
+  <span class="update-info" id="updateInfo">Para actualizar: botón "Actualizar datos" → seleccioná el Excel exportado de SharePoint</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ============================================================
+// DATOS EMBEBIDOS (actualizados al generar este archivo)
+// ============================================================
+const EMBEDDED_DATA = [
+  {id:"MOV-001",fecha:"2026-03-24",producto:"Semilla colza",pa:"CURRY CL",tipo:"Semilla",subtipo:"",proveedor:"ERRO",lote:"SEM-260324-1",tipo_mov:"ENTRADA",cantidad:3400,cantidad_neta:3400,unidad:"kg",fecha_venc:null},
+  {id:"MOV-002",fecha:"2026-04-01",producto:"Korvetto",pa:"Clopyralid 12% + Halauxyfen methyl 0,51%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"KOR-260401-1",tipo_mov:"ENTRADA",cantidad:700,cantidad_neta:700,unidad:"L",fecha_venc:"2027-11-19"},
+  {id:"MOV-003",fecha:"2026-04-01",producto:"Lontrel",pa:"Clopyralid sal monoetanolamina 40.9%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"LON-260401-1",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"L",fecha_venc:"2027-04-23"},
+  {id:"MOV-004",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11,35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"PRE-260401-1",tipo_mov:"ENTRADA",cantidad:2800,cantidad_neta:2700,unidad:"L",fecha_venc:"2027-05-21"},
+  {id:"MOV-005",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11,35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"PRE-260401-2",tipo_mov:"ENTRADA",cantidad:100,cantidad_neta:100,unidad:"L",fecha_venc:"2028-01-09"},
+  {id:"MOV-006",fecha:"2025-04-01",producto:"Tordon 24K",pa:"Picloram 24,9%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"TOR-250401-1",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"L",fecha_venc:"2027-05-10"},
+  {id:"MOV-007",fecha:"2025-04-01",producto:"Tronador",pa:"Aminopyralid 44,4% + Metsulfuron metil 30%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"TRO-250401-1",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"Pack",fecha_venc:"2027-02-25"},
+  {id:"MOV-008",fecha:"2026-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"VEN-260401-1",tipo_mov:"ENTRADA",cantidad:4800,cantidad_neta:4800,unidad:"L",fecha_venc:"2027-12-16"},
+  {id:"MOV-009",fecha:"2027-04-01",producto:"Preside",pa:"Flumetsulam 11.35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"PRE-260401-1",tipo_mov:"SALIDA",cantidad:100,cantidad_neta:-100,unidad:"L",fecha_venc:"2027-05-21"},
+  {id:"MOV-010",fecha:"2028-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"VEN-260401-1",tipo_mov:"SALIDA",cantidad:360,cantidad_neta:-360,unidad:"L",fecha_venc:"2027-12-16"},
+];
+
+let allData = [...EMBEDDED_DATA];
+let tipoActivo = 'todos';
+let subtipoActivo = 'todos';
+let sortField = 'producto';
+let sortAsc = true;
+
+// ============================================================
+// PROCESS DATA INTO GROUPED PRODUCTS
+// ============================================================
+function processData(movimientos) {
+  const map = {};
+  movimientos.forEach(m => {
+    const key = m.producto;
+    if (!map[key]) {
+      map[key] = {
+        producto: m.producto,
+        pa: m.pa,
+        tipo: m.tipo,
+        subtipo: m.subtipo,
+        unidad: m.unidad,
+        stockTotal: 0,
+        lotes: new Set(),
+        vencMin: null,
+        movimientos: []
+      };
+    }
+    map[key].stockTotal += m.cantidad_neta;
+    if (m.lote) map[key].lotes.add(m.lote);
+    map[key].movimientos.push(m);
+    if (m.fecha_venc) {
+      const d = new Date(m.fecha_venc);
+      if (!map[key].vencMin || d < new Date(map[key].vencMin)) {
+        map[key].vencMin = m.fecha_venc;
+      }
+    }
+  });
+  return Object.values(map).filter(p => p.stockTotal > 0);
+}
+
+function getDias(venc) {
+  if (!venc) return null;
+  return Math.round((new Date(venc) - new Date()) / 86400000);
+}
+
+function getStatus(producto) {
+  const dias = getDias(producto.vencMin);
+  if (dias === null) return { text: 'S/D', cls: 'status-nd' };
+  if (dias < 0) return { text: 'VENCIDO', cls: 'status-venc' };
+  if (dias < 180) return { text: 'PRÓX.VENC', cls: 'status-warn' };
+  return { text: 'OK', cls: 'status-ok' };
+}
+
+function getBadgeCls(tipo) {
+  const t = (tipo||'').toLowerCase();
+  if (t.includes('herb')) return 'badge-herb';
+  if (t.includes('semi')) return 'badge-semi';
+  if (t.includes('fung')) return 'badge-fung';
+  if (t.includes('insec')) return 'badge-inse';
+  if (t.includes('coad')) return 'badge-coady';
+  return 'badge-default';
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('es-UY', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const productos = processData(allData);
+
+  // Update subtipo buttons
+  let filtered = tipoActivo === 'todos' ? productos : productos.filter(p => p.tipo === tipoActivo);
+  const subtipos = [...new Set(filtered.map(p => p.subtipo).filter(s => s && s.trim()))];
+  const subDiv = document.getElementById('subtipoBtns');
+  if (subtipos.length > 0) {
+    subDiv.innerHTML = `<span style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-right:4px">SUBTIPO:</span>` +
+      `<button class="sub-btn ${subtipoActivo==='todos'?'active':''}" onclick="setSub('todos')">Todos</button>` +
+      subtipos.map(s => `<button class="sub-btn ${subtipoActivo===s?'active':''}" onclick="setSub('${s}')">${s}</button>`).join('');
+  } else {
+    subDiv.innerHTML = '';
+    subtipoActivo = 'todos';
+  }
+
+  // Apply subtipo filter
+  if (subtipoActivo !== 'todos') {
+    filtered = filtered.filter(p => p.subtipo === subtipoActivo);
+  }
+
+  // Sort
+  filtered.sort((a, b) => {
+    let va, vb;
+    if (sortField === 'producto') { va = a.producto; vb = b.producto; }
+    else if (sortField === 'tipo') { va = a.tipo; vb = b.tipo; }
+    else if (sortField === 'subtipo') { va = a.subtipo||''; vb = b.subtipo||''; }
+    else if (sortField === 'pa') { va = a.pa; vb = b.pa; }
+    else if (sortField === 'lotes') { va = a.lotes.size; vb = b.lotes.size; }
+    else if (sortField === 'stock') { va = a.stockTotal; vb = b.stockTotal; }
+    else if (sortField === 'venc') { va = a.vencMin||'9999'; vb = b.vencMin||'9999'; }
+    if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    return sortAsc ? va - vb : vb - va;
+  });
+
+  // KPIs
+  const allProds = processData(allData);
+  document.getElementById('kpi-prod').textContent = filtered.length;
+  document.getElementById('kpi-lotes').textContent = filtered.reduce((s, p) => s + p.lotes.size, 0);
+  document.getElementById('kpi-warn').textContent = filtered.filter(p => {
+    const d = getDias(p.vencMin); return d !== null && d >= 0 && d < 180;
+  }).length;
+  document.getElementById('kpi-venc').textContent = filtered.filter(p => {
+    const d = getDias(p.vencMin); return d !== null && d < 0;
+  }).length;
+
+  // Row count
+  document.getElementById('rowCount').textContent = `${filtered.length} producto${filtered.length !== 1 ? 's' : ''}`;
+
+  // Table
+  const tbody = document.getElementById('tableBody');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">Sin productos para el filtro seleccionado</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(p => {
+    const status = getStatus(p);
+    const dias = getDias(p.vencMin);
+    const diasStr = dias !== null ? ` <span style="font-size:10px;color:var(--text3)">(${dias}d)</span>` : '';
+    const badgeCls = getBadgeCls(p.tipo);
+    return `<tr>
+      <td class="product-name">${p.producto}</td>
+      <td><span class="type-badge ${badgeCls}">${p.tipo || '—'}</span></td>
+      <td class="mono">${p.subtipo || '—'}</td>
+      <td style="font-size:11px;color:var(--text2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.pa}</td>
+      <td style="text-align:center"><span class="lote-badge">${p.lotes.size}</span></td>
+      <td class="number">${p.stockTotal.toLocaleString('es-UY')}</td>
+      <td class="mono" style="font-size:11px">${p.unidad}</td>
+      <td class="mono" style="font-size:11px">${fmtDate(p.vencMin)}${diasStr}</td>
+      <td><span class="status-pill ${status.cls}">${status.text}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function setTipo(tipo, btn) {
+  tipoActivo = tipo;
+  subtipoActivo = 'todos';
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.className = 'filter-btn';
+  });
+  const t = tipo.toLowerCase();
+  if (t === 'todos') btn.classList.add('active-all');
+  else if (t === 'herbicida') btn.classList.add('active-herb');
+  else if (t === 'semilla') btn.classList.add('active-semi');
+  else if (t === 'fungicida') btn.classList.add('active-fung');
+  else if (t === 'insecticida') btn.classList.add('active-inse');
+  else btn.classList.add('active-coady');
+  render();
+}
+
+function setSub(sub) {
+  subtipoActivo = sub;
+  render();
+}
+
+function sortBy(field) {
+  if (sortField === field) sortAsc = !sortAsc;
+  else { sortField = field; sortAsc = true; }
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+  render();
+}
+
+// ============================================================
+// LOAD EXCEL
+// ============================================================
+function loadExcel(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+      // Try TblMovimientos first, then Movimientos
+      const wsName = wb.SheetNames.includes('TblMovimientos') ? 'TblMovimientos' : 'Movimientos';
+      const ws = wb.Sheets[wsName];
+      const raw = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
+
+      // Find header row (has ID_Mov)
+      let headerRow = -1;
+      for (let i = 0; i < Math.min(raw.length, 10); i++) {
+        if (raw[i] && raw[i].some(c => c && String(c).includes('ID_Mov'))) {
+          headerRow = i; break;
+        }
+      }
+      if (headerRow === -1) { alert('No se encontró la hoja de movimientos correcta'); return; }
+
+      const headers = raw[headerRow].map(h => String(h||'').replace(/\n/g,' ').trim());
+      const iID = headers.findIndex(h => h.includes('ID_Mov'));
+      const iFecha = headers.findIndex(h => h.includes('Fecha') && !h.includes('Venc') && !h.includes('Recep'));
+      const iProd = headers.findIndex(h => h.includes('Producto'));
+      const iPA = headers.findIndex(h => h.includes('Principio'));
+      const iTipo = headers.findIndex(h => h === 'Tipo');
+      const iSub = headers.findIndex(h => h.includes('Subtipo'));
+      const iProv = headers.findIndex(h => h.includes('Proveedor'));
+      const iLote = headers.findIndex(h => h.includes('ID_Lote'));
+      const iTipMov = headers.findIndex(h => h.includes('Tipo_Mov'));
+      const iCant = headers.findIndex(h => h.includes('siempre'));
+      const iCantN = headers.findIndex(h => h.includes('Neta'));
+      const iUnidad = headers.findIndex(h => h === 'Unidad');
+      const iVenc = headers.findIndex(h => h.includes('Vencimiento'));
+
+      const newData = [];
+      for (let i = headerRow + 1; i < raw.length; i++) {
+        const r = raw[i];
+        if (!r || !r[iFecha] || !r[iProd]) continue;
+        const fv = r[iVenc];
+        newData.push({
+          id: r[iID] || '',
+          fecha: r[iFecha] || '',
+          producto: String(r[iProd] || '').trim(),
+          pa: String(r[iPA] || '').trim(),
+          tipo: String(r[iTipo] || '').trim(),
+          subtipo: String(r[iSub] || '').trim(),
+          proveedor: String(r[iProv] || '').trim(),
+          lote: String(r[iLote] || '').trim(),
+          tipo_mov: String(r[iTipMov] || '').trim(),
+          cantidad: parseFloat(r[iCant]) || 0,
+          cantidad_neta: parseFloat(r[iCantN]) || 0,
+          unidad: String(r[iUnidad] || '').trim(),
+          fecha_venc: fv ? String(fv).substring(0,10) : null,
+        });
+      }
+
+      if (newData.length === 0) { alert('No se encontraron datos en el archivo'); return; }
+      allData = newData;
+      tipoActivo = 'todos';
+      subtipoActivo = 'todos';
+      document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
+      document.querySelector('[data-tipo="todos"]').classList.add('active-all');
+      document.getElementById('lastUpdate').textContent = `Actualizado: ${new Date().toLocaleString('es-UY')}`;
+      render();
+    } catch(err) {
+      alert('Error al leer el archivo: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  event.target.value = '';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('lastUpdate').textContent = `Datos al 05/04/2026`;
+render();
+</script>
+</body>
+</html>
