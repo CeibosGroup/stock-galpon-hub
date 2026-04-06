@@ -422,10 +422,9 @@
       <div class="logo-sub">Stock insumos</div>
     </div>
   </div>
-  <button class="update-btn" onclick="document.getElementById('fileInput').click()">
+  <button class="update-btn" onclick="loadFromGitHub()">
     ↑ Actualizar
   </button>
-  <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="loadExcel(event)">
 </header>
 
 <!-- KPIs -->
@@ -497,19 +496,97 @@ const EMBEDDED_DATA = [
   {id:"MOV-003",fecha:"2026-04-01",producto:"Lontrel",pa:"Clopyralid sal monoetanolamina 40.9%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-003",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"L",fecha_venc:"2027-04-23"},
   {id:"MOV-004",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11,35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"260401-004",tipo_mov:"ENTRADA",cantidad:2800,cantidad_neta:2700,unidad:"L",fecha_venc:"2027-05-21"},
   {id:"MOV-005",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11,35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"260401-005",tipo_mov:"ENTRADA",cantidad:100,cantidad_neta:100,unidad:"L",fecha_venc:"2028-01-09"},
-  {id:"MOV-006",fecha:"2025-04-01",producto:"Tordon 24K",pa:"Picloram 24,9%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-006",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"L",fecha_venc:"2027-05-10"},
-  {id:"MOV-007",fecha:"2025-04-01",producto:"Tronador",pa:"Aminopyralid 44,4% + Metsulfuron metil 30%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-007",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"Pack",fecha_venc:"2027-02-25"},
+  {id:"MOV-006",fecha:"2026-04-01",producto:"Tordon 24K",pa:"Picloram 24,9%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-006",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"L",fecha_venc:"2027-05-10"},
+  {id:"MOV-007",fecha:"2026-04-01",producto:"Tronador",pa:"Aminopyralid 44,4% + Metsulfuron metil 30%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-007",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"Pack",fecha_venc:"2027-02-25"},
   {id:"MOV-008",fecha:"2026-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-008",tipo_mov:"ENTRADA",cantidad:4800,cantidad_neta:4800,unidad:"L",fecha_venc:"2027-12-16"},
-  {id:"MOV-009",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11,35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"260401-004",tipo_mov:"SALIDA",cantidad:100,cantidad_neta:-100,unidad:"L",fecha_venc:"2027-05-21"},
+  {id:"MOV-009",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11.35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"260401-004",tipo_mov:"SALIDA",cantidad:100,cantidad_neta:-100,unidad:"L",fecha_venc:"2027-05-21"},
   {id:"MOV-010",fecha:"2026-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-008",tipo_mov:"SALIDA",cantidad:360,cantidad_neta:-360,unidad:"L",fecha_venc:"2027-12-16"},
-  {id:"MOV-011",fecha:"2026-04-02",producto:"Glifosato sal potasica",pa:"Glifosato sal potasica",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-011",tipo_mov:"ENTRADA",cantidad:500,cantidad_neta:500,unidad:"L",fecha_venc:"2026-05-12"},
+  {id:"MOV-011",fecha:"2026-04-02",producto:"Glifosato sal potasica",pa:"glifosato sal potasica",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-011",tipo_mov:"ENTRADA",cantidad:500,cantidad_neta:500,unidad:"L",fecha_venc:"2026-05-12"},
   {id:"MOV-012",fecha:"2026-04-02",producto:"Harrier",pa:"—",tipo:"Coadyuvante",subtipo:"",proveedor:"GS Agro",lote:"260402-012",tipo_mov:"ENTRADA",cantidad:200,cantidad_neta:200,unidad:"L",fecha_venc:"2026-12-15"},
-  {id:"MOV-013",fecha:"2026-04-02",producto:"Harrier",pa:"—",tipo:"Coadyuvante",subtipo:"",proveedor:"GS Agro",lote:"260402-012",tipo_mov:"SALIDA",cantidad:200,cantidad_neta:-200,unidad:"L",fecha_venc:"2026-12-15"},
-  {id:"MOV-014",fecha:"2026-04-02",producto:"Glifosato 48%",pa:"Glifosato 48%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-014",tipo_mov:"ENTRADA",cantidad:100,cantidad_neta:100,unidad:"L",fecha_venc:"2026-04-05"},
-  {id:"MOV-015",fecha:"2026-04-02",producto:"Glifosato 48%",pa:"Glifosato 48%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-015",tipo_mov:"ENTRADA",cantidad:200,cantidad_neta:200,unidad:"L",fecha_venc:"2026-08-06"},
+  {id:"MOV-013",fecha:"2026-04-02",producto:"Harrier",pa:"—",tipo:"Coadyuvante",subtipo:"",proveedor:"GS Agro",lote:"260402-012",tipo_mov:"salida",cantidad:200,cantidad_neta:-200,unidad:"L",fecha_venc:"2026-12-15"},
+  {id:"MOV-014",fecha:"2026-04-02",producto:"Glifosato 48%",pa:"glifosato 48%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-014",tipo_mov:"ENTRADA",cantidad:100,cantidad_neta:100,unidad:"L",fecha_venc:"2026-04-05"},
+  {id:"MOV-015",fecha:"2026-04-02",producto:"Glifosato 48%",pa:"glifosato 48%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-015",tipo_mov:"ENTRADA",cantidad:200,cantidad_neta:200,unidad:"L",fecha_venc:"2026-08-06"},
+  {id:"MOV-016",fecha:"2026-04-02",producto:"Dedalo elite",pa:"2,4 Dedalo",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-016",tipo_mov:"ENTRADA",cantidad:12500,cantidad_neta:12500,unidad:"L",fecha_venc:null},
+  {id:"MOV-017",fecha:"2026-04-02",producto:"Hydrahume",pa:"—",tipo:"Biológico",subtipo:"",proveedor:"GS Agro",lote:"260402-017",tipo_mov:"ENTRADA",cantidad:2000,cantidad_neta:2000,unidad:"L",fecha_venc:null}
 ];
 
 let allData = [...EMBEDDED_DATA];
+
+const GITHUB_URL = 'https://raw.githubusercontent.com/CeibosGroup/stock-galpon-hub/main/movimientos.xlsx';
+
+async function loadFromGitHub() {
+  const btn = document.querySelector('.update-btn');
+  btn.textContent = 'Cargando...';
+  btn.disabled = true;
+  try {
+    const resp = await fetch(GITHUB_URL + '?t=' + Date.now());
+    if (!resp.ok) throw new Error('No se pudo descargar el archivo');
+    const buffer = await resp.arrayBuffer();
+    parseExcelBuffer(buffer);
+    document.getElementById('bottomDate').textContent = new Date().toLocaleDateString('es-UY');
+  } catch(err) {
+    alert('Error al cargar desde GitHub: ' + err.message);
+  } finally {
+    btn.textContent = '↑ Actualizar';
+    btn.disabled = false;
+  }
+}
+
+function parseExcelBuffer(buffer) {
+  try {
+    const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
+    const wsName = wb.SheetNames.includes('TblMovimientos') ? 'TblMovimientos' : 'Movimientos';
+    const ws = wb.Sheets[wsName];
+    const raw = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
+    let headerRow = -1;
+    for (let i = 0; i < Math.min(raw.length, 10); i++) {
+      if (raw[i] && raw[i].some(c => c && String(c).includes('ID_Mov'))) { headerRow = i; break; }
+    }
+    if (headerRow === -1) { alert('No se encontró la tabla de movimientos'); return; }
+    const headers = raw[headerRow].map(h => String(h||'').replace(/\n/g,' ').trim());
+    const iID = headers.findIndex(h => h.includes('ID_Mov'));
+    const iFecha = headers.findIndex(h => h.includes('Fecha') && !h.includes('Venc') && !h.includes('Recep'));
+    const iProd = headers.findIndex(h => h.includes('Producto'));
+    const iPA = headers.findIndex(h => h.includes('Principio'));
+    const iTipo = headers.findIndex(h => h === 'Tipo');
+    const iSub = headers.findIndex(h => h.includes('Subtipo'));
+    const iProv = headers.findIndex(h => h.includes('Proveedor'));
+    const iLote = headers.findIndex(h => h.includes('ID_Lote'));
+    const iTipMov = headers.findIndex(h => h.includes('Tipo_Mov'));
+    const iCant = headers.findIndex(h => h.includes('siempre'));
+    const iCantN = headers.findIndex(h => h.includes('Neta'));
+    const iUnidad = headers.findIndex(h => h === 'Unidad');
+    const iVenc = headers.findIndex(h => h.includes('Vencimiento'));
+    const newData = [];
+    for (let i = headerRow + 1; i < raw.length; i++) {
+      const r = raw[i];
+      if (!r || !r[iFecha] || !r[iProd] || String(r[iProd]).trim() === '') continue;
+      newData.push({
+        id: r[iID]||'', fecha: r[iFecha]||'',
+        producto: String(r[iProd]||'').trim(),
+        pa: (iPA >= 0 && r[iPA]) ? String(r[iPA]).trim() : '—',
+        tipo: String(r[iTipo]||'').trim(),
+        subtipo: String(r[iSub]||'').trim(),
+        proveedor: String(r[iProv]||'').trim(),
+        lote: String(r[iLote]||'').trim(),
+        tipo_mov: String(r[iTipMov]||'').trim(),
+        cantidad: parseFloat(r[iCant])||0,
+        cantidad_neta: parseFloat(r[iCantN])||0,
+        unidad: String(r[iUnidad]||'').trim(),
+        fecha_venc: r[iVenc] ? String(r[iVenc]).substring(0,10) : null,
+      });
+    }
+    if (newData.length === 0) { alert('No se encontraron datos'); return; }
+    allData = newData;
+    tipoActivo = 'todos'; subtipoActivo = 'todos';
+    document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
+    document.querySelector('[data-tipo="todos"]').classList.add('active-all');
+    render();
+  } catch(err) { alert('Error al procesar el archivo: ' + err.message); }
+}
+
+// Cargar desde GitHub automáticamente al abrir
+window.addEventListener('load', () => { loadFromGitHub(); });
 let tipoActivo = 'todos';
 let subtipoActivo = 'todos';
 let searchQuery = '';
@@ -674,66 +751,7 @@ function setTipo(tipo, btn) {
 
 function setSub(sub) { subtipoActivo = sub; render(); }
 
-function loadExcel(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
-      const wsName = wb.SheetNames.includes('TblMovimientos') ? 'TblMovimientos' : 'Movimientos';
-      const ws = wb.Sheets[wsName];
-      const raw = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
-      let headerRow = -1;
-      for (let i = 0; i < Math.min(raw.length, 10); i++) {
-        if (raw[i] && raw[i].some(c => c && String(c).includes('ID_Mov'))) { headerRow = i; break; }
-      }
-      if (headerRow === -1) { alert('No se encontró la tabla de movimientos'); return; }
-      const headers = raw[headerRow].map(h => String(h||'').replace(/\n/g,' ').trim());
-      const iID = headers.findIndex(h => h.includes('ID_Mov'));
-      const iFecha = headers.findIndex(h => h.includes('Fecha') && !h.includes('Venc') && !h.includes('Recep'));
-      const iProd = headers.findIndex(h => h.includes('Producto'));
-      const iPA = headers.findIndex(h => h.includes('Principio'));
-      const iTipo = headers.findIndex(h => h === 'Tipo');
-      const iSub = headers.findIndex(h => h.includes('Subtipo'));
-      const iProv = headers.findIndex(h => h.includes('Proveedor'));
-      const iLote = headers.findIndex(h => h.includes('ID_Lote'));
-      const iTipMov = headers.findIndex(h => h.includes('Tipo_Mov'));
-      const iCant = headers.findIndex(h => h.includes('siempre'));
-      const iCantN = headers.findIndex(h => h.includes('Neta'));
-      const iUnidad = headers.findIndex(h => h === 'Unidad');
-      const iVenc = headers.findIndex(h => h.includes('Vencimiento'));
-      const newData = [];
-      for (let i = headerRow + 1; i < raw.length; i++) {
-        const r = raw[i];
-        if (!r || !r[iFecha] || !r[iProd] || String(r[iProd]).trim() === '') continue;
-        newData.push({
-          id: r[iID]||'', fecha: r[iFecha]||'',
-          producto: String(r[iProd]||'').trim(),
-          pa: (iPA >= 0 && r[iPA]) ? String(r[iPA]).trim() : '—',
-          tipo: String(r[iTipo]||'').trim(),
-          subtipo: String(r[iSub]||'').trim(),
-          proveedor: String(r[iProv]||'').trim(),
-          lote: String(r[iLote]||'').trim(),
-          tipo_mov: String(r[iTipMov]||'').trim(),
-          cantidad: parseFloat(r[iCant])||0,
-          cantidad_neta: parseFloat(r[iCantN])||0,
-          unidad: String(r[iUnidad]||'').trim(),
-          fecha_venc: r[iVenc] ? String(r[iVenc]).substring(0,10) : null,
-        });
-      }
-      if (newData.length === 0) { alert('No se encontraron datos'); return; }
-      allData = newData;
-      tipoActivo = 'todos'; subtipoActivo = 'todos';
-      document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
-      document.querySelector('[data-tipo="todos"]').classList.add('active-all');
-      document.getElementById('bottomDate').textContent = new Date().toLocaleDateString('es-UY');
-      render();
-    } catch(err) { alert('Error: ' + err.message); }
-  };
-  reader.readAsArrayBuffer(file);
-  event.target.value = '';
-}
+
 
 document.getElementById('bottomDate').textContent = '05/04/2026';
 render();
