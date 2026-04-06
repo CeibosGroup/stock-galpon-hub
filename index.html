@@ -336,6 +336,56 @@
     font-size: 13px;
   }
 
+  /* SEARCH */
+  .search-wrap {
+    padding: 0 16px 10px;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px 10px 36px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+  .search-input:focus { border-color: var(--blue); }
+  .search-input::placeholder { color: var(--text3); }
+  .search-container {
+    position: relative;
+  }
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .search-clear {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg3);
+    border: none;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 50%;
+    width: 20px; height: 20px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .search-clear.visible { display: flex; }
+
   /* BOTTOM BAR */
   .bottom-bar {
     position: fixed;
@@ -402,6 +452,15 @@
   </div>
 </div>
 
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-container">
+    <span class="search-icon">⌕</span>
+    <input type="search" class="search-input" id="searchInput" placeholder="Buscar producto..." oninput="onSearch(this.value)">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+  </div>
+</div>
+
 <!-- TIPO FILTER -->
 <div class="filter-label-row">Tipo</div>
 <div class="filter-scroll" id="tipoScroll">
@@ -448,6 +507,20 @@ const EMBEDDED_DATA = [
 let allData = [...EMBEDDED_DATA];
 let tipoActivo = 'todos';
 let subtipoActivo = 'todos';
+let searchQuery = '';
+
+function onSearch(val) {
+  searchQuery = val.toLowerCase().trim();
+  document.getElementById('searchClear').classList.toggle('visible', searchQuery.length > 0);
+  render();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  searchQuery = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  render();
+}
 
 function processData(movimientos) {
   const map = {};
@@ -515,6 +588,16 @@ function render() {
   }
 
   if (subtipoActivo !== 'todos') filtered = filtered.filter(p => p.subtipo === subtipoActivo);
+
+  // Search filter
+  if (searchQuery) {
+    filtered = filtered.filter(p =>
+      p.producto.toLowerCase().includes(searchQuery) ||
+      p.pa.toLowerCase().includes(searchQuery) ||
+      p.tipo.toLowerCase().includes(searchQuery) ||
+      (p.subtipo||'').toLowerCase().includes(searchQuery)
+    );
+  }
 
   // KPIs
   document.getElementById('kpi-prod').textContent = filtered.length;
