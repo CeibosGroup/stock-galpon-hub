@@ -520,26 +520,34 @@ async function loadFromGitHub() {
   btn.disabled = true;
   try {
     const resp = await fetch(GITHUB_URL + '?t=' + Date.now());
-    if (!resp.ok) throw new Error('No se pudo descargar el archivo');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const buffer = await resp.arrayBuffer();
     parseExcelBuffer(buffer);
     document.getElementById('bottomDate').textContent = new Date().toLocaleDateString('es-UY');
   } catch(err) {
-    alert('Error al cargar desde GitHub: ' + err.message);
-  } finally {
+    console.error('GitHub fetch error:', err);
+    // Fallback a datos embebidos
+    allData = [...EMBEDDED_DATA];
+    render();
     btn.textContent = '↑ Actualizar';
     btn.disabled = false;
+    return;
   }
+  btn.textContent = '↑ Actualizar';
+  btn.disabled = false;
 }
 
 function parseExcelBuffer(buffer) {
   try {
     const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
+    console.log('Sheets:', wb.SheetNames);
     const wsName = wb.SheetNames.includes('TblMovimientos') ? 'TblMovimientos' : 'Movimientos';
     const ws = wb.Sheets[wsName];
     const raw = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, cellDates: true });
+    console.log('Total rows:', raw.length);
     let headerRow = -1;
     for (let i = 0; i < Math.min(raw.length, 10); i++) {
+      console.log('Row', i, raw[i]);
       if (raw[i] && raw[i].some(c => c && String(c).includes('ID_Mov'))) { headerRow = i; break; }
     }
     if (headerRow === -1) { alert('No se encontró la tabla de movimientos'); return; }
