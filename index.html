@@ -573,7 +573,7 @@ function parseExcelBuffer(buffer) {
         cantidad: Number(r[iCant])||0,
         cantidad_neta: Number(r[iCantN])||0,
         unidad: String(r[iUnidad]||'').trim(),
-        fecha_venc: r[iVenc] ? String(r[iVenc]).substring(0,10) : null,
+        fecha_venc: r[iVenc] ? excelDateToISO(r[iVenc]) : null,
       });
     }
     if (newData.length === 0) { alert('No se encontraron datos'); return; }
@@ -604,7 +604,22 @@ function clearSearch() {
   render();
 }
 
-function processData(movimientos) {
+function excelDateToISO(val) {
+  if (!val) return null;
+  // Si es número, es serial de Excel
+  if (typeof val === 'number') {
+    const d = new Date(Math.round((val - 25569) * 86400 * 1000));
+    return d.toISOString().substring(0, 10);
+  }
+  // Si es Date object (cellDates: true a veces lo pasa así)
+  if (val instanceof Date) {
+    return val.toISOString().substring(0, 10);
+  }
+  // Si es string, tomar los primeros 10 chars
+  return String(val).substring(0, 10);
+}
+
+
   const map = {};
   movimientos.forEach(m => {
     const key = m.producto;
