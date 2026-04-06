@@ -537,7 +537,7 @@ function parseExcelBuffer(buffer) {
     const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
     const wsName = wb.SheetNames.includes('TblMovimientos') ? 'TblMovimientos' : 'Movimientos';
     const ws = wb.Sheets[wsName];
-    const raw = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false });
+    const raw = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, cellDates: true });
     let headerRow = -1;
     for (let i = 0; i < Math.min(raw.length, 10); i++) {
       if (raw[i] && raw[i].some(c => c && String(c).includes('ID_Mov'))) { headerRow = i; break; }
@@ -570,8 +570,8 @@ function parseExcelBuffer(buffer) {
         proveedor: String(r[iProv]||'').trim(),
         lote: String(r[iLote]||'').trim(),
         tipo_mov: String(r[iTipMov]||'').trim(),
-        cantidad: parseFloat(r[iCant])||0,
-        cantidad_neta: parseFloat(r[iCantN])||0,
+        cantidad: Number(r[iCant])||0,
+        cantidad_neta: Number(r[iCantN])||0,
         unidad: String(r[iUnidad]||'').trim(),
         fecha_venc: r[iVenc] ? String(r[iVenc]).substring(0,10) : null,
       });
