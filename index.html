@@ -502,7 +502,8 @@ const EMBEDDED_DATA = [
   {id:"MOV-008",fecha:"2026-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"VEN-260401-1",tipo_mov:"ENTRADA",cantidad:4800,cantidad_neta:4800,unidad:"L",fecha_venc:"2027-12-16"},
   {id:"MOV-009",fecha:"2027-04-01",producto:"Preside",pa:"Flumetsulam 11.35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"PRE-260401-1",tipo_mov:"SALIDA",cantidad:100,cantidad_neta:-100,unidad:"L",fecha_venc:"2027-05-21"},
   {id:"MOV-010",fecha:"2028-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"VEN-260401-1",tipo_mov:"SALIDA",cantidad:360,cantidad_neta:-360,unidad:"L",fecha_venc:"2027-12-16"},
-  {id:"MOV-011",fecha:"2026-04-06",producto:"Glifosato",pa:"Glifosato sal potásica",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"GLI-260406-1",tipo_mov:"ENTRADA",cantidad:500,cantidad_neta:500,unidad:"L",fecha_venc:"2026-05-12"},
+  {id:"MOV-011",fecha:"2026-04-02",producto:"Glifosato",pa:"Glifosato sal potasica",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"GLI-260402-1",tipo_mov:"ENTRADA",cantidad:500,cantidad_neta:500,unidad:"L",fecha_venc:"2026-05-12"},
+  {id:"MOV-012",fecha:"2026-04-02",producto:"Harrier",pa:"—",tipo:"Coadyuvante",subtipo:"",proveedor:"GS Agro",lote:"HAR-260402-1",tipo_mov:"ENTRADA",cantidad:200,cantidad_neta:200,unidad:"L",fecha_venc:"2026-12-15"},
 ];
 
 let allData = [...EMBEDDED_DATA];
@@ -706,7 +707,7 @@ function loadExcel(event) {
         newData.push({
           id: r[iID]||'', fecha: r[iFecha]||'',
           producto: String(r[iProd]||'').trim(),
-          pa: String(r[iPA]||'').trim(),
+          pa: (iPA >= 0 && r[iPA]) ? String(r[iPA]).trim() : '—',
           tipo: String(r[iTipo]||'').trim(),
           subtipo: String(r[iSub]||'').trim(),
           proveedor: String(r[iProv]||'').trim(),
