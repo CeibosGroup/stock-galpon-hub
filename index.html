@@ -589,6 +589,8 @@ function parseExcelBuffer(buffer) {
       });
     }
     if (newData.length === 0) { alert('No se encontraron datos'); return; }
+    console.log('Parsed rows:', newData.length);
+    console.log('All products:', newData.map(d => d.producto + ' | neta:' + d.cantidad_neta + ' | mov:' + d.tipo_mov));
     allData = newData;
     tipoActivo = 'todos'; subtipoActivo = 'todos';
     document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
