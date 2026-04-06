@@ -470,6 +470,7 @@
   <button class="filter-btn" data-tipo="Semilla" onclick="setTipo('Semilla', this)">Semilla</button>
   <button class="filter-btn" data-tipo="Coadyuvante" onclick="setTipo('Coadyuvante', this)">Coadyuvante</button>
   <button class="filter-btn" data-tipo="Biológico" onclick="setTipo('Biológico', this)">Biológico</button>
+  <button class="filter-btn" data-tipo="Silobolsa" onclick="setTipo('Silobolsa', this)">Silobolsa</button>
 </div>
 
 <!-- SUBTIPO FILTER -->
@@ -497,17 +498,11 @@ const EMBEDDED_DATA = [
   {id:"MOV-004",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11,35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"260401-004",tipo_mov:"ENTRADA",cantidad:2800,cantidad_neta:2700,unidad:"L",fecha_venc:"2027-05-21"},
   {id:"MOV-005",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11,35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"260401-005",tipo_mov:"ENTRADA",cantidad:100,cantidad_neta:100,unidad:"L",fecha_venc:"2028-01-09"},
   {id:"MOV-006",fecha:"2026-04-01",producto:"Tordon 24K",pa:"Picloram 24,9%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-006",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"L",fecha_venc:"2027-05-10"},
-  {id:"MOV-007",fecha:"2026-04-01",producto:"Tronador",pa:"Aminopyralid 44,4% + Metsulfuron metil 30%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-007",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"Pack",fecha_venc:"2027-02-25"},
+  {id:"MOV-007",fecha:"2026-04-01",producto:"Tronador",pa:"Halauxifen metil 3.3% + Aminopyralid 2.7% + Metsulfuron metil 20%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-007",tipo_mov:"ENTRADA",cantidad:300,cantidad_neta:300,unidad:"Pack",fecha_venc:"2027-02-25"},
   {id:"MOV-008",fecha:"2026-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-008",tipo_mov:"ENTRADA",cantidad:4800,cantidad_neta:4800,unidad:"L",fecha_venc:"2027-12-16"},
   {id:"MOV-009",fecha:"2026-04-01",producto:"Preside",pa:"Flumetsulam 11.35%",tipo:"Herbicida",subtipo:"Preemergente",proveedor:"GS Agro",lote:"260401-004",tipo_mov:"SALIDA",cantidad:100,cantidad_neta:-100,unidad:"L",fecha_venc:"2027-05-21"},
   {id:"MOV-010",fecha:"2026-04-01",producto:"Venceweed extra",pa:"2,4-Db-Butilo 93.1%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260401-008",tipo_mov:"SALIDA",cantidad:360,cantidad_neta:-360,unidad:"L",fecha_venc:"2027-12-16"},
-  {id:"MOV-011",fecha:"2026-04-02",producto:"Glifosato sal potasica",pa:"glifosato sal potasica",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-011",tipo_mov:"ENTRADA",cantidad:500,cantidad_neta:500,unidad:"L",fecha_venc:"2026-05-12"},
-  {id:"MOV-012",fecha:"2026-04-02",producto:"Harrier",pa:"—",tipo:"Coadyuvante",subtipo:"",proveedor:"GS Agro",lote:"260402-012",tipo_mov:"ENTRADA",cantidad:200,cantidad_neta:200,unidad:"L",fecha_venc:"2026-12-15"},
-  {id:"MOV-013",fecha:"2026-04-02",producto:"Harrier",pa:"—",tipo:"Coadyuvante",subtipo:"",proveedor:"GS Agro",lote:"260402-012",tipo_mov:"salida",cantidad:200,cantidad_neta:-200,unidad:"L",fecha_venc:"2026-12-15"},
-  {id:"MOV-014",fecha:"2026-04-02",producto:"Glifosato 48%",pa:"glifosato 48%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-014",tipo_mov:"ENTRADA",cantidad:100,cantidad_neta:100,unidad:"L",fecha_venc:"2026-04-05"},
-  {id:"MOV-015",fecha:"2026-04-02",producto:"Glifosato 48%",pa:"glifosato 48%",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-015",tipo_mov:"ENTRADA",cantidad:200,cantidad_neta:200,unidad:"L",fecha_venc:"2026-08-06"},
-  {id:"MOV-016",fecha:"2026-04-02",producto:"Dedalo elite",pa:"2,4 Dedalo",tipo:"Herbicida",subtipo:"Postemergente",proveedor:"GS Agro",lote:"260402-016",tipo_mov:"ENTRADA",cantidad:12500,cantidad_neta:12500,unidad:"L",fecha_venc:null},
-  {id:"MOV-017",fecha:"2026-04-02",producto:"Hydrahume",pa:"—",tipo:"Biológico",subtipo:"",proveedor:"GS Agro",lote:"260402-017",tipo_mov:"ENTRADA",cantidad:2000,cantidad_neta:2000,unidad:"L",fecha_venc:null}
+  {id:"MOV-011",fecha:"2026-04-06",producto:"Silobolsa",pa:"Silobolsa 9 pies",tipo:"Silobolsa",subtipo:"",proveedor:"AYP Agrogestiones",lote:"260406-011",tipo_mov:"ENTRADA",cantidad:3,cantidad_neta:3,unidad:"unidad",fecha_venc:null}
 ];
 
 let allData = [...EMBEDDED_DATA];
@@ -581,7 +576,14 @@ function parseExcelBuffer(buffer) {
         lote: String(r[iLote]||'').trim(),
         tipo_mov: String(r[iTipMov]||'').trim(),
         cantidad: Number(r[iCant])||0,
-        cantidad_neta: Number(r[iCantN])||0,
+        cantidad_neta: (function() {
+          const neta = Number(r[iCantN]);
+          if (neta !== 0) return neta;
+          // fallback: calcular desde cantidad y tipo_mov
+          const cant = Number(r[iCant])||0;
+          const tm = String(r[iTipMov]||'').trim().toUpperCase();
+          return tm === 'ENTRADA' ? cant : -cant;
+        })(),
         unidad: String(r[iUnidad]||'').trim(),
         fecha_venc: r[iVenc] ? excelDateToISO(r[iVenc]) : null,
       });
