@@ -1,4 +1,4 @@
-const CACHE = 'galpon-hub-v1';
+const CACHE = 'galpon-hub-v2';
 const ASSETS = [
   './',
   './index.html',
