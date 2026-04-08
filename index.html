@@ -76,14 +76,14 @@
   }
   .logo { display: flex; align-items: center; gap: 10px; }
   .logo-mark {
-    width: 30px; height: 30px;
-    background: var(--green);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono);
-    font-size: 12px; font-weight: 600; color: #000;
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    overflow: hidden;
     flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg3);
   }
+  .logo-mark img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
   .logo-text { font-size: 14px; font-weight: 500; }
   .logo-sub { font-size: 10px; color: var(--text2); font-family: var(--mono); }
 
@@ -476,7 +476,63 @@
   .lote-venc.warn { color: var(--amber); }
   .lote-venc.venc { color: var(--red); }
 
-  /* BOTTOM BAR */
+  /* LOGIN */
+  #loginScreen {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+    padding: 24px;
+  }
+  #loginScreen.hidden { display: none; }
+  .login-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 24px;
+    width: 100%; max-width: 340px;
+  }
+  .login-logo {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 28px;
+  }
+  .login-logo img { width: 40px; height: 40px; border-radius: 10px; }
+  .login-logo-text { font-size: 16px; font-weight: 600; }
+  .login-logo-sub { font-size: 11px; color: var(--text2); font-family: var(--mono); }
+  .login-field { margin-bottom: 14px; }
+  .login-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text2); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 6px; display: block;
+  }
+  .login-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: var(--mono); font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .login-input:focus { border-color: var(--blue); }
+  .login-btn {
+    width: 100%;
+    background: var(--green);
+    border: none; border-radius: 8px;
+    color: #000; font-family: var(--mono);
+    font-size: 13px; font-weight: 600;
+    padding: 13px;
+    cursor: pointer; margin-top: 8px;
+    transition: opacity 0.15s;
+  }
+  .login-btn:active { opacity: 0.85; }
+  .login-error {
+    color: var(--red); font-family: var(--mono);
+    font-size: 11px; margin-top: 10px;
+    text-align: center; min-height: 16px;
+  }
   .bottom-bar {
     position: fixed;
     bottom: 0;
@@ -504,9 +560,32 @@
 </head>
 <body>
 
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="icon-192.png" alt="CG">
+      <div>
+        <div class="login-logo-text">Galpón Hub</div>
+        <div class="login-logo-sub">Ceibos Group</div>
+      </div>
+    </div>
+    <div class="login-field">
+      <label class="login-label">Usuario</label>
+      <input class="login-input" id="loginUser" type="email" placeholder="usuario@ceibosgroup.com" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Contraseña</label>
+      <input class="login-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Ingresar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
 <header>
   <div class="logo">
-    <div class="logo-mark">CG</div>
+    <div class="logo-mark"><img src="icon-192.png" alt="CG"></div>
     <div>
       <div class="logo-text">Galpón Hub</div>
       <div class="logo-sub">Stock insumos</div>
@@ -692,6 +771,33 @@ function parseExcelBuffer(buffer) {
 
 // Cargar desde GitHub automáticamente al abrir
 window.addEventListener('load', () => { loadFromGitHub(); });
+// LOGIN — reemplazá TU_USUARIO y TU_CONTRASEÑA antes de subir
+const USUARIOS = {
+  'narocha@ceibosgroup.com': 'GalponHub2026'
+};
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+  if (USUARIOS[user] && USUARIOS[user] === pass) {
+    sessionStorage.setItem('gh_auth', '1');
+    document.getElementById('loginScreen').classList.add('hidden');
+    err.textContent = '';
+    loadFromGitHub();
+  } else {
+    err.textContent = 'Usuario o contraseña incorrectos';
+    document.getElementById('loginPass').value = '';
+  }
+}
+
+// Verificar sesión al cargar
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('gh_auth') === '1') {
+    document.getElementById('loginScreen').classList.add('hidden');
+  }
+});
+
 let tipoActivo = 'todos';
 let subtipoActivo = 'todos';
 let searchQuery = '';
