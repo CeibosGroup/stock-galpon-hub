@@ -595,7 +595,26 @@
     ↑ Actualizar
   </button>
   <button class="update-btn" id="themeBtn" onclick="toggleTheme()" style="margin-left:6px">☀</button>
+  <button class="update-btn" id="installBtn" onclick="installApp()" style="margin-left:6px;display:none">⬇ App</button>
 </header>
+
+<!-- MODAL iOS -->
+<div id="iosModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:998;align-items:flex-end;justify-content:center;">
+  <div style="background:var(--bg2);border-radius:16px 16px 0 0;padding:24px 20px 40px;width:100%;max-width:500px;border-top:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);">Instalar en iPhone / iPad</span>
+      <button onclick="document.getElementById('iosModal').style.display='none'" style="background:var(--bg3);border:none;color:var(--text2);border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:16px;">✕</button>
+    </div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--text2);line-height:2.2;">
+      <div>1. Tocá el botón <strong style="color:var(--text);">compartir ↑</strong> abajo en Safari</div>
+      <div>2. Deslizá y elegí <strong style="color:var(--text);">"Agregar a pantalla de inicio"</strong></div>
+      <div>3. Tocá <strong style="color:var(--text);">"Agregar"</strong> para confirmar</div>
+    </div>
+    <div style="margin-top:16px;padding:10px 14px;background:var(--amber-dim);border-radius:8px;font-family:var(--mono);font-size:11px;color:var(--amber);">
+      Debe usarse Safari, no Chrome ni otro navegador
+    </div>
+  </div>
+</div>
 
 <!-- KPIs -->
 <div class="kpis">
@@ -771,9 +790,45 @@ function parseExcelBuffer(buffer) {
 
 // Cargar desde GitHub automáticamente al abrir
 window.addEventListener('load', () => { loadFromGitHub(); });
+// PWA Install
+let deferredPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'inline-block';
+});
+
+function installApp() {
+  if (isIOS) {
+    const modal = document.getElementById('iosModal');
+    modal.style.display = 'flex';
+    return;
+  }
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+    });
+  }
+}
+
+// Mostrar botón en iOS si no está instalada
+if (isIOS && !isInStandalone) {
+  document.getElementById('installBtn').style.display = 'inline-block';
+}
+
+// Cerrar modal iOS tocando fuera
+document.getElementById('iosModal').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+
 // LOGIN — reemplazá TU_USUARIO y TU_CONTRASEÑA antes de subir
 const USUARIOS = {
-  'narocha@ceibosgroup.com': 'GalponHub2026'
+  'xnarocha@ceibosgroup.com': 'GalponHub2026'
 };
 
 function doLogin() {
