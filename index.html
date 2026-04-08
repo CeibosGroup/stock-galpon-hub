@@ -33,6 +33,25 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
+  /* TEMA CLARO */
+  body.light {
+    --bg: #f0f4f8;
+    --bg2: #ffffff;
+    --bg3: #e2e8f0;
+    --border: #cbd5e1;
+    --text: #0f172a;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --green: #16a34a;
+    --green-dim: #16a34a18;
+    --amber: #d97706;
+    --amber-dim: #d9770618;
+    --red: #dc2626;
+    --red-dim: #dc262618;
+    --blue: #2563eb;
+    --blue-dim: #2563eb18;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   body {
@@ -95,7 +114,12 @@
     padding: 12px 14px;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
   }
+  .kpi:active { transform: scale(0.97); }
+  .kpi.kpi-active { border-color: currentColor; }
   .kpi::before {
     content: '';
     position: absolute;
@@ -389,6 +413,69 @@
   }
   .search-clear.visible { display: flex; }
 
+  /* ACORDEÓN LOTES */
+  .lotes-acordeon {
+    border-top: 1px solid var(--border);
+    margin-top: 10px;
+    padding-top: 10px;
+    display: none;
+  }
+  .lotes-acordeon.open { display: block; }
+  .lotes-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+  .lotes-toggle-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex: 1;
+  }
+  .lotes-toggle-arrow {
+    font-size: 10px;
+    color: var(--text3);
+    transition: transform 0.2s;
+  }
+  .lotes-toggle.open .lotes-toggle-arrow { transform: rotate(180deg); }
+  .lote-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .lote-row:last-child { border-bottom: none; }
+  .lote-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .lote-info {
+    text-align: right;
+  }
+  .lote-stock {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .lote-venc {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 1px;
+  }
+  .lote-venc.warn { color: var(--amber); }
+  .lote-venc.venc { color: var(--red); }
+
   /* BOTTOM BAR */
   .bottom-bar {
     position: fixed;
@@ -428,26 +515,27 @@
   <button class="update-btn" onclick="loadFromGitHub()">
     ↑ Actualizar
   </button>
+  <button class="update-btn" id="themeBtn" onclick="toggleTheme()" style="margin-left:6px">☀</button>
 </header>
 
 <!-- KPIs -->
 <div class="kpis">
-  <div class="kpi green">
+  <div class="kpi green" onclick="setKpiFilter('todos')">
     <div class="kpi-label">Productos</div>
     <div class="kpi-val" id="kpi-prod">—</div>
     <div class="kpi-sub">en stock</div>
   </div>
-  <div class="kpi blue">
+  <div class="kpi blue" onclick="setKpiFilter('todos')">
     <div class="kpi-label">Lotes</div>
     <div class="kpi-val" id="kpi-lotes">—</div>
     <div class="kpi-sub">activos</div>
   </div>
-  <div class="kpi amber">
+  <div class="kpi amber" id="kpi-warn-card" onclick="setKpiFilter('warn')">
     <div class="kpi-label">Próx. vencer</div>
     <div class="kpi-val" id="kpi-warn">—</div>
     <div class="kpi-sub">&lt; 6 meses</div>
   </div>
-  <div class="kpi red">
+  <div class="kpi red" id="kpi-venc-card" onclick="setKpiFilter('venc')">
     <div class="kpi-label">Vencidos</div>
     <div class="kpi-val" id="kpi-venc">—</div>
     <div class="kpi-sub">atención</div>
@@ -607,6 +695,21 @@ window.addEventListener('load', () => { loadFromGitHub(); });
 let tipoActivo = 'todos';
 let subtipoActivo = 'todos';
 let searchQuery = '';
+let kpiFilter = 'todos'; // 'todos' | 'warn' | 'venc'
+
+function setKpiFilter(f) {
+  kpiFilter = kpiFilter === f && f !== 'todos' ? 'todos' : f;
+  document.getElementById('kpi-warn-card').classList.toggle('kpi-active', kpiFilter === 'warn');
+  document.getElementById('kpi-venc-card').classList.toggle('kpi-active', kpiFilter === 'venc');
+  render();
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', isLight ? '#f0f4f8' : '#0f1117');
+  localStorage.setItem('tema', isLight ? 'light' : 'dark');
+}
 
 function onSearch(val) {
   searchQuery = val.toLowerCase().trim();
@@ -645,11 +748,17 @@ function processData(movimientos) {
       map[key] = {
         producto: m.producto, pa: m.pa, tipo: m.tipo,
         subtipo: m.subtipo, unidad: m.unidad,
-        stockTotal: 0, lotes: new Set(), vencMin: null
+        stockTotal: 0, lotes: new Set(), lotesDetalle: {}, vencMin: null
       };
     }
     map[key].stockTotal += m.cantidad_neta;
-    if (m.lote) map[key].lotes.add(m.lote);
+    if (m.lote) {
+      map[key].lotes.add(m.lote);
+      if (!map[key].lotesDetalle[m.lote]) {
+        map[key].lotesDetalle[m.lote] = { id: m.lote, stock: 0, venc: m.fecha_venc, unidad: m.unidad };
+      }
+      map[key].lotesDetalle[m.lote].stock += m.cantidad_neta;
+    }
     if (m.fecha_venc) {
       const d = new Date(m.fecha_venc);
       if (!map[key].vencMin || d < new Date(map[key].vencMin)) map[key].vencMin = m.fecha_venc;
@@ -690,7 +799,10 @@ function render() {
   const productos = processData(allData);
   let filtered = tipoActivo === 'todos' ? productos : productos.filter(p => p.tipo === tipoActivo);
 
-  // Subtipo buttons
+  // Filtro KPI vencimiento
+  if (kpiFilter === 'warn') filtered = filtered.filter(p => { const d = getDias(p.vencMin); return d !== null && d >= 0 && d < 180; });
+  if (kpiFilter === 'venc') filtered = filtered.filter(p => { const d = getDias(p.vencMin); return d !== null && d < 0; });
+
   const subtipos = [...new Set(filtered.map(p => p.subtipo).filter(s => s && s.trim()))];
   const subDiv = document.getElementById('subtipoScroll');
   if (subtipos.length > 0) {
@@ -733,6 +845,31 @@ function render() {
     const dias = getDias(p.vencMin);
     const diasStr = dias !== null ? ` (${dias}d)` : '';
     const badgeCls = getBadgeCls(p.tipo);
+    const cardId = 'card-' + p.producto.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+
+    // Lotes detalle — solo los con stock > 0
+    const lotesArr = Object.values(p.lotesDetalle).filter(l => l.stock > 0);
+    const lotesHtml = lotesArr.length > 1 ? `
+      <div class="lotes-toggle" onclick="toggleLotes('${cardId}')" id="toggle-${cardId}">
+        <span class="lotes-toggle-label">▸ Ver ${lotesArr.length} lotes</span>
+        <span class="lotes-toggle-arrow">▾</span>
+      </div>
+      <div class="lotes-acordeon" id="ac-${cardId}">
+        ${lotesArr.map(l => {
+          const dv = getDias(l.venc);
+          let vencCls = '', vencTxt = l.venc ? fmtDate(l.venc) + (dv !== null ? ` (${dv}d)` : '') : 'S/D';
+          if (dv !== null && dv < 0) vencCls = 'venc';
+          else if (dv !== null && dv < 180) vencCls = 'warn';
+          return `<div class="lote-row">
+            <span class="lote-id">${l.id}</span>
+            <div class="lote-info">
+              <div class="lote-stock">${l.stock.toLocaleString('es-UY')} <span style="font-size:10px;color:var(--text2)">${l.unidad}</span></div>
+              <div class="lote-venc ${vencCls}">${vencTxt}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>` : '';
+
     return `<div class="card">
       <div class="card-top">
         <div>
@@ -752,7 +889,7 @@ function render() {
         </div>
         <div class="card-stat">
           <div class="card-stat-label">Lotes</div>
-          <div class="card-stat-val" style="color:var(--blue)">${p.lotes.size}</div>
+          <div class="card-stat-val" style="color:var(--blue)">${lotesArr.length}</div>
           <div class="card-stat-unit">activos</div>
         </div>
         <div class="card-stat">
@@ -764,6 +901,7 @@ function render() {
         <span class="card-venc-label">Primer vencimiento</span>
         <span class="card-venc-date">${fmtDate(p.vencMin)}${diasStr}</span>
       </div>` : ''}
+      ${lotesHtml}
     </div>`;
   }).join('');
 }
@@ -784,9 +922,29 @@ function setTipo(tipo, btn) {
 
 function setSub(sub) { subtipoActivo = sub; render(); }
 
+function toggleLotes(cardId) {
+  const ac = document.getElementById('ac-' + cardId);
+  const toggle = document.getElementById('toggle-' + cardId);
+  if (!ac) return;
+  ac.classList.toggle('open');
+  toggle.classList.toggle('open');
+  const label = toggle.querySelector('.lotes-toggle-label');
+  const isOpen = ac.classList.contains('open');
+  const n = ac.querySelectorAll('.lote-row').length;
+  label.textContent = (isOpen ? '▾ Ocultar' : '▸ Ver') + ` ${n} lotes`;
+}
+
 
 
 document.getElementById('bottomDate').textContent = '05/04/2026';
+
+// Recuperar tema guardado
+if (localStorage.getItem('tema') === 'light') {
+  document.body.classList.add('light');
+  document.getElementById('themeBtn').textContent = '🌙';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f0f4f8');
+}
+
 render();
 
 // Registrar Service Worker para PWA
