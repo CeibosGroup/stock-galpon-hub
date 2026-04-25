@@ -767,8 +767,8 @@ function parseExcelBuffer(buffer) {
         cantidad: Number(r[iCant])||0,
         cantidad_neta: (function() {
           const neta = Number(r[iCantN]);
-          if (neta !== 0) return neta;
-          // fallback: calcular desde cantidad y tipo_mov
+          if (!isNaN(neta) && neta !== 0) return neta;
+          // fallback: calcular desde cantidad y tipo_mov (cubre None, NaN, 0 vacío)
           const cant = Number(r[iCant])||0;
           const tm = String(r[iTipMov]||'').trim().toUpperCase();
           return tm === 'ENTRADA' ? cant : -cant;
